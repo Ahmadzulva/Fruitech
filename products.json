@@ -1,0 +1,51 @@
+[
+    {
+        "id": 1,
+        "name":" Orange juice",
+        "price": 200,
+        "image": "image/9.png"
+    },
+    {
+        "id": 2,
+        "name":"  juice",
+        "price": 250,
+        "image": "image/9.png"
+    },
+    {
+        "id": 3,
+        "name":"  juice",
+        "price": 290,
+        "image": "image/9.png"
+    },
+    {
+        "id": 4,
+        "name":"  juice",
+        "price": 200,
+        "image": "image/9.png"
+    },
+    {
+        "id": 5,
+        "name":"  juice",
+        "price": 300,
+        "image": "image/9.png"
+    },
+    {
+        "id": 6,
+        "name":"  juice",
+        "price": 200,
+        "image": "image/9.png"
+    },
+    {
+        "id": 7,
+        "name":"  juice",
+        "price": 200,
+        "image": "image/9.png"
+    },
+    {
+        "id": 8,
+        "name":"  juice",
+        "price": 200,
+        "image": "image/9.png"
+    }
+
+]
