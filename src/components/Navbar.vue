@@ -52,6 +52,14 @@ const { keranjang } = helper
                 >Home</RouterLink
               >
             </li>
+            <li>
+              <RouterLink
+                :to="'/product/0'"
+                class="block mt-2.5 py-2 px-3 text-white bg-white-700 rounded md:bg-transparent md:text-white-700 md:p-0 dark:text-white md:dark:text-white-500"
+                aria-current="page"
+                >Product</RouterLink
+              >
+            </li>
 
             <li class="flex items-center">
               <RouterLink :to="'/keranjang'">

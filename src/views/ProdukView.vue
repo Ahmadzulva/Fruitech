@@ -11,17 +11,29 @@ const { keranjang } = helper
 
 const currentIndex = ref(0)
 const images = ref([
-  { src: '/assets/images/juice-orange.jpeg', alt: 'Product 1', text: 'Juice Orange - Fruitech' },
+  {
+    src: '/assets/images/juice-orange.jpeg',
+    alt: 'Product 1',
+    text: 'Juice Orange - Fruitech',
+    harga: 'Rp 9.900'
+  },
   {
     src: '/assets/images/juice-watermelon.jpeg',
     alt: 'Product 2',
-    text: 'Watermelon Juice - Fruitech'
+    text: 'Watermelon Juice - Fruitech',
+    harga: 'Rp 9.900'
   },
-  { src: '/assets/images/juice-lemon.jpeg', alt: 'Product 3', text: 'Lemon Juice -  Fruitech' },
+  {
+    src: '/assets/images/juice-lemon.jpeg',
+    alt: 'Product 3',
+    text: 'Lemon Juice -  Fruitech',
+    harga: 'Rp 9.900'
+  },
   {
     src: '/assets/images/juice-strawberry.jpeg',
     alt: 'Product 4',
-    text: 'Strawberry Juice - Fruitech'
+    text: 'Strawberry Juice - Fruitech',
+    harga: 'Rp 9.900'
   }
 ])
 
@@ -57,7 +69,7 @@ const cekCart = () => {
     Swal.fire({
       icon: 'success',
       title: 'Success!',
-      text: 'You have ' + keranjang.value + ' item(s) in your cart.'
+      text: 'You have ' + keranjang.value.length + ' item(s) in your cart.'
     })
   }
 }
@@ -140,7 +152,9 @@ onMounted(() => {
         <span class="text-lg font-medium text-white line-through dark:text-white mb-2"
           >Rp 14.999</span
         >
-        <span class="ms-3 text-lg font-medium text-white dark:text-white">Rp 9.999</span>
+        <span class="ms-3 text-lg font-medium text-white dark:text-white">{{
+          images[currentIndex].harga
+        }}</span>
         <div class="flex items-center mb-4">
           <p class="text-white mb-4 text-justify mt-4">
             Fruitech adalah kelezatan segar yang terkemas dalam setiap tetesnya. Dipenuhi dengan

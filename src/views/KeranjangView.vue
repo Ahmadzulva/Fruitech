@@ -1,94 +1,275 @@
-<script setup>
-import { ref } from 'vue'
-import Swal from 'sweetalert2'
-import helper from '@/utilities/helper';
-
-const { keranjang } = helper
-
-const products = ref([
-  { name: 'Watermelon Juice', description: 'Description 1', price: 9900, image: "assets/images/juice-watermelon.jpeg" },
-  { name: 'Orange Juice', description: 'Description 2', price: 9900, image: "assets/images/juice-orange.jpeg" },
-  { name: 'Lemon Juice', description: 'Description 3', price: 9900, image: "assets/images/juice-lemon.jpeg" },
-  { name: 'Strawberry Juice', description: 'Description 3', price: 9900, image: "assets/images/juice-strawberry.jpeg" }
-],)
-
-const addToCart = (product) => {
-  keranjang.value.push(product)
-  Swal.fire({
-    position: 'center',
-    icon: 'success',
-    title: 'Product added to cart',
-    showConfirmButton: false,
-    timer: 1500
-  })
-}
-
-const cekCart = () => {
-  document.getElementById('modal').classList.remove('hidden')
-}
-
-const closeModal = () => {
-  document.getElementById('modal').classList.add('hidden')
-}
-
-const getTotalPrice = () => {
-  return keranjang.value.reduce((total, item) => total + item.price, 0)
-}
-
-const checkout = () => {
-  keranjang.value = []
-  Swal.fire({
-    icon: 'success',
-    title: 'Checkout Success',
-    showConfirmButton: false,
-    timer: 1500
-  })
-  closeModal()
-}
-</script>
 <template>
-  <div class="container mx-auto py-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div v-for="(product, index) in products" :key="index" class="bg-white rounded-lg shadow-xl overflow-hidden">
-        <div class="relative pb-60 overflow-hidden">
-          <img :src="product.image"
-            class="absolute inset-0 h-full w-full object-cover transform hover:scale-110 transition duration-300"
-            alt="Product" />
-        </div>
-        <div class="px-4 py-2">
-          <h3 class="text-xl font-medium text-gray-800">{{ product.name }}</h3>
-          <p class="text-gray-600">{{ product.description }}</p>
-          <p class="text-gray-700 font-semibold mt-2">Price: Rp {{ product.price }}</p>
-          <button
-            class="mt-2 px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded focus:outline-none focus:bg-blue-600"
-            @click="addToCart(product)">
-            Add to Cart
-          </button>
+  <div class="container mx-auto px-4 pt-16 pb-8">
+    <h2 class="text-2xl font-semibold mb-4 text-white">Keranjang Belanja</h2>
+    <div class="flex flex-col">
+      <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+          <div class="overflow-hidden">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+              <table
+                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+              >
+                <thead
+                  class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+                >
+                  <tr>
+                    <th scope="col" class="px-16 py-3">
+                      <span class="sr-only">Image</span>
+                    </th>
+                    <th scope="col" class="px-6 py-3">Product</th>
+                    <th scope="col" class="px-6 py-3">Qty</th>
+                    <th scope="col" class="px-6 py-3">Price</th>
+                    <th scope="col" class="px-6 py-3">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(item, index) in keranjang"
+                    :key="item.id"
+                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  >
+                    <td class="p-4">
+                      <img
+                        :src="item.src"
+                        :alt="item.alt"
+                        class="w-16 md:w-32 max-w-full max-h-full"
+                      />
+                    </td>
+                    <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                      {{ item.text }}
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="flex items-center">
+                        <button
+                          @click="decrementQuantity(item)"
+                          class="inline-flex items-center justify-center p-1 me-3 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                          type="button"
+                        >
+                          <span class="sr-only">Quantity button</span>
+                          <svg
+                            class="w-3 h-3"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 18 2"
+                          >
+                            <path
+                              stroke="currentColor"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M1 1h16"
+                            />
+                          </svg>
+                        </button>
+                        <div>
+                          <input
+                            type="number"
+                            v-model="item.jumlah"
+                            class="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            required
+                            @change="updateTotal(index)"
+                          />
+                        </div>
+                        <button
+                          @click="incrementQuantity(item)"
+                          class="inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                          type="button"
+                        >
+                          <span class="sr-only">Quantity button</span>
+                          <svg
+                            class="w-3 h-3"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 18 18"
+                          >
+                            <path
+                              stroke="currentColor"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M9 1v16M1 9h16"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                      {{ item.harga }}
+                    </td>
+                    <td class="px-6 py-4">
+                      <a
+                        href="#"
+                        @click.prevent="hapusDariKeranjang(index)"
+                        class="font-medium text-red-600 dark:text-red-500 hover:underline"
+                        >Remove</a
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <!-- Modal component -->
-  <div id="modal" class="hidden absolute inset-0 flex justify-center items-center bg-black bg-opacity-50">
-    <div class="bg-white p-8 rounded-md">
-      <h2 class="text-2xl font-semibold mb-4">Shopping Cart</h2>
-      <ul>
-        <li v-for="(item, index) in keranjang" :key="index">
-          {{ item.name }} - Rp {{ item.price }}
-        </li>
-      </ul>
-      <p class="font-semibold mt-4">Total: Rp {{ getTotalPrice() }}</p>
+    <div class="flex justify-between mt-4">
+      <p class="text-xl font-semibold text-white">Total: {{ totalHarga }}</p>
       <button
-        class="mt-4 px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded focus:outline-none focus:bg-blue-600"
-        @click="checkout()">
-        Checkout
-      </button>
-      <button class="mt-4 px-4 py-2 bg-red-500 text-white hover:bg-red-600 rounded focus:outline-none focus:bg-red-600"
-        @click="closeModal()">
-        Close
+        @click="submitKeranjang"
+        class="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+      >
+        Beli
       </button>
     </div>
   </div>
 </template>
 
-<style></style>
+<script setup>
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import helper from '@/utilities/helper'
+import Swal from 'sweetalert2'
+
+const router = useRouter()
+const { keranjang } = helper
+
+const totalHarga = ref(0)
+
+const hapusDariKeranjang = (index) => {
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: 'custom-swal-confirm',
+      cancelButton: 'custom-swal-cancel'
+    },
+    buttonsStyling: false
+  })
+
+  swalWithBootstrapButtons
+    .fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true
+    })
+    .then((result) => {
+      if (result.isConfirmed) {
+        keranjang.value.splice(index, 1)
+        swalWithBootstrapButtons.fire({
+          title: 'Deleted!',
+          text: 'Your product has been deleted from the cart.',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1500
+        })
+        updateTotal() // Panggil updateTotal setelah item dihapus
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        swalWithBootstrapButtons.fire({
+          title: 'Cancelled',
+          text: 'Your product is safe :)',
+          icon: 'error',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }
+    })
+}
+
+const decrementQuantity = (item) => {
+  if (item.jumlah > 0) {
+    item.jumlah--
+    updateTotal() // Panggil updateTotal setelah mengurangi jumlah
+  }
+}
+
+const incrementQuantity = (item) => {
+  item.jumlah++
+  updateTotal() // Panggil updateTotal setelah menambah jumlah
+}
+
+const updateTotal = () => {
+  totalHarga.value = keranjang.value.reduce(
+    (total, item) => total.item + item.harga * item.jumlah,
+    0
+  )
+}
+
+const submitKeranjang = () => {
+  if (keranjang.value.length === 0) {
+    Swal.fire({
+      title: 'Keranjang Kosong',
+      text: 'Tambahkan barang ke keranjang sebelum melakukan pembelian.',
+      icon: 'warning',
+      confirmButtonText: 'OK'
+    })
+  } else {
+    Swal.fire({
+      title: 'Konfirmasi Pembelian',
+      text: `Total pembelian: ${totalHarga.value}`,
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Beli',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Proses pembelian disini...
+        // Misalnya, arahkan ke halaman pembayaran atau lakukan tindakan lain yang sesuai
+        keranjang.value = [] // Kosongkan keranjang setelah pembelian berhasil
+        totalHarga.value = 0 // Set totalHarga kembali ke 0 setelah pembelian berhasil
+        Swal.fire({
+          title: 'Pembelian Berhasil',
+          text: 'Terima kasih telah berbelanja!',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 2000
+        })
+      }
+    })
+  }
+}
+</script>
+
+<style>
+.custom-swal-confirm {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+.custom-swal-confirm:hover {
+  background-color: #218838;
+}
+
+.custom-swal-confirm:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+}
+
+.custom-swal-cancel {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.custom-swal-cancel:hover {
+  background-color: #c82333;
+}
+
+.custom-swal-cancel:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
+}
+</style>
