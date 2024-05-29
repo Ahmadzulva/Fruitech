@@ -15,25 +15,25 @@ const images = ref([
     src: '/assets/images/juice-orange.jpeg',
     alt: 'Product 1',
     text: 'Juice Orange - Fruitech',
-    harga: 'Rp 9.900'
+    harga: 9900
   },
   {
     src: '/assets/images/juice-watermelon.jpeg',
     alt: 'Product 2',
     text: 'Watermelon Juice - Fruitech',
-    harga: 'Rp 9.900'
+    harga: 9900
   },
   {
     src: '/assets/images/juice-lemon.jpeg',
     alt: 'Product 3',
-    text: 'Lemon Juice -  Fruitech',
-    harga: 'Rp 9.900'
+    text: 'Lemon Juice - Fruitech',
+    harga: 9900
   },
   {
     src: '/assets/images/juice-strawberry.jpeg',
     alt: 'Product 4',
     text: 'Strawberry Juice - Fruitech',
-    harga: 'Rp 9.900'
+    harga: 9900
   }
 ])
 
@@ -48,7 +48,7 @@ const next = () => {
 }
 
 const addToCart = (product) => {
-  keranjang.value.push(product)
+  keranjang.value.push({ ...product, jumlah: 1 }) // Tambahkan jumlah awal 1
   Swal.fire({
     position: 'center',
     icon: 'success',
@@ -152,9 +152,9 @@ onMounted(() => {
         <span class="text-lg font-medium text-white line-through dark:text-white mb-2"
           >Rp 14.999</span
         >
-        <span class="ms-3 text-lg font-medium text-white dark:text-white">{{
-          images[currentIndex].harga
-        }}</span>
+        <span class="ms-3 text-lg font-medium text-white dark:text-white"
+          >Rp {{ images[currentIndex].harga }}</span
+        >
         <div class="flex items-center mb-4">
           <p class="text-white mb-4 text-justify mt-4">
             Fruitech adalah kelezatan segar yang terkemas dalam setiap tetesnya. Dipenuhi dengan

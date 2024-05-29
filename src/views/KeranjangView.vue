@@ -68,7 +68,7 @@
                             v-model="item.jumlah"
                             class="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             required
-                            @change="updateTotal(index)"
+                            @change="updateTotal()"
                           />
                         </div>
                         <button
@@ -96,7 +96,7 @@
                       </div>
                     </td>
                     <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                      {{ item.harga }}
+                      {{ formatCurrency(item.harga * item.jumlah) }}
                     </td>
                     <td class="px-6 py-4">
                       <a
@@ -115,7 +115,7 @@
       </div>
     </div>
     <div class="flex justify-between mt-4">
-      <p class="text-xl font-semibold text-white">Total: {{ totalHarga }}</p>
+      <p class="text-xl font-semibold text-white">Total: {{ formatCurrency(totalHarga) }}</p>
       <button
         @click="submitKeranjang"
         class="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
@@ -161,16 +161,15 @@ const hapusDariKeranjang = (index) => {
         keranjang.value.splice(index, 1)
         swalWithBootstrapButtons.fire({
           title: 'Deleted!',
-          text: 'Your product has been deleted from the cart.',
+          text: 'Your item has been deleted.',
           icon: 'success',
           showConfirmButton: false,
           timer: 1500
         })
-        updateTotal() // Panggil updateTotal setelah item dihapus
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         swalWithBootstrapButtons.fire({
           title: 'Cancelled',
-          text: 'Your product is safe :)',
+          text: 'Your item is safe :)',
           icon: 'error',
           showConfirmButton: false,
           timer: 1500
@@ -191,11 +190,12 @@ const incrementQuantity = (item) => {
   updateTotal() // Panggil updateTotal setelah menambah jumlah
 }
 
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value)
+}
+
 const updateTotal = () => {
-  totalHarga.value = keranjang.value.reduce(
-    (total, item) => total.item + item.harga * item.jumlah,
-    0
-  )
+  totalHarga.value = keranjang.value.reduce((acc, cur) => acc + cur.harga * cur.jumlah, 0)
 }
 
 const submitKeranjang = () => {
